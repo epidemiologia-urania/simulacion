@@ -1,0 +1,6 @@
+# Dependencias para la aplicación de simulación de modelos epidemiológicos
+streamlit
+numpy
+scipy
+pandas
+plotly
