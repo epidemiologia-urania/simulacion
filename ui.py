@@ -17,7 +17,7 @@ def sidebar():
     
     modelo = st.sidebar.selectbox(
         "Seleccione el Modelo",
-        ("SIR", "SI", "SIS", "SEIR")
+        ("SIR", "SI", "SIS", "SEIR", "Impacto Climático", "Modelo Ross-Macdonald")
     )
 
     poblacion = st.sidebar.number_input("Población Total", min_value=1, value=1000)
@@ -56,5 +56,76 @@ def sidebar():
     elif modelo == "SI":
         beta = st.sidebar.slider("Beta (Tasa de transmisión)", 0.0, 1.0, 0.2)
         parametros["beta"] = beta
+    
+    elif modelo == "Impacto Climático":
+        st.sidebar.markdown("### Configuración Climática")
+        temp_base = st.sidebar.number_input("Temperatura Base (°C)", value=25.0, step=1.0)
+        temp_step = st.sidebar.number_input("Incremento de Temp (°C)", value=5.0, step=1.0)
+        num_escenarios = st.sidebar.slider("Número de Escenarios", 2, 5, 3)
+        sensibilidad = st.sidebar.slider("Sensibilidad (% aumento Beta / °C)", 0.0, 0.5, 0.05, format="%.2f")
+        
+        st.sidebar.markdown("### Parámetros Modelo Base (SEIR)")
+        beta = st.sidebar.slider("Beta Base (a Temp Base)", 0.0, 1.0, 0.2)
+        gamma = st.sidebar.slider("Gamma (Tasa de recuperación)", 0.0, 1.0, 0.1)
+        sigma = st.sidebar.slider("Sigma (Tasa de incubación)", 0.0, 1.0, 0.1)
+        
+        parametros["temp_base"] = temp_base
+        parametros["temp_step"] = temp_step
+        parametros["num_escenarios"] = num_escenarios
+        parametros["sensibilidad"] = sensibilidad
+        parametros["beta"] = beta
+        parametros["gamma"] = gamma
+        parametros["sigma"] = sigma
+        parametros["expuestos_iniciales"] = st.sidebar.number_input("Expuestos Iniciales", min_value=0, value=0)
+        parametros["recuperados_iniciales"] = st.sidebar.number_input("Recuperados Iniciales", min_value=0, value=0)
+
+    elif modelo == "Modelo Ross-Macdonald":
+        modo_sim = st.sidebar.selectbox(
+            "Modo de Simulación",
+            ("Simulación Simple", "Comparar por Temperatura", "Comparar por Humedad")
+        )
+        parametros["modo_sim"] = modo_sim
+
+        st.sidebar.markdown("### Condiciones Climáticas")
+        
+        if modo_sim == "Simulación Simple":
+            temp = st.sidebar.slider("Temperatura (°C)", 10.0, 40.0, 28.0)
+            humedad = st.sidebar.slider("Humedad Relativa (%)", 0.0, 100.0, 70.0)
+            parametros["temp"] = temp
+            parametros["humedad"] = humedad
+            
+        elif modo_sim == "Comparar por Temperatura":
+            humedad = st.sidebar.slider("Humedad Fija (%)", 0.0, 100.0, 70.0)
+            st.sidebar.markdown("#### Configuración de Temperatura")
+            temp_base = st.sidebar.number_input("Temp. Base (°C)", value=24.0, step=1.0)
+            temp_step = st.sidebar.number_input("Incremento (°C)", value=2.0, step=1.0)
+            num_escenarios = st.sidebar.slider("Nº Escenarios", 2, 5, 3)
+            
+            parametros["humedad"] = humedad
+            parametros["temp_base"] = temp_base
+            parametros["temp_step"] = temp_step
+            parametros["num_escenarios"] = num_escenarios
+            
+        elif modo_sim == "Comparar por Humedad":
+            temp = st.sidebar.slider("Temperatura Fija (°C)", 10.0, 40.0, 28.0)
+            st.sidebar.markdown("#### Configuración de Humedad")
+            hum_base = st.sidebar.number_input("Humedad Base (%)", value=50.0, step=5.0)
+            hum_step = st.sidebar.number_input("Aymento (%)", value=10.0, step=5.0)
+            num_escenarios = st.sidebar.slider("Nº Escenarios", 2, 5, 3)
+            
+            parametros["temp"] = temp
+            parametros["hum_base"] = hum_base
+            parametros["hum_step"] = hum_step
+            parametros["num_escenarios"] = num_escenarios
+
+        st.sidebar.markdown("### Parámetros Biológicos")
+        prob_h_v = st.sidebar.slider("Prob. Transmisión H->V (b)", 0.0, 1.0, 0.5)
+        prob_v_h = st.sidebar.slider("Prob. Transmisión V->H (c)", 0.0, 1.0, 0.5)
+        gamma = st.sidebar.slider("Tasa de Recuperación H (gamma)", 0.0, 1.0, 0.14)
+        
+        parametros["b"] = prob_h_v
+        parametros["c"] = prob_v_h
+        parametros["gamma"] = gamma
+        parametros["infectados_v_iniciales"] = st.sidebar.number_input("Mosquitos Infectados Iniciales", min_value=0, value=100)
 
     return modelo, parametros
