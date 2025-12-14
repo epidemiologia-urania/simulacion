@@ -9,9 +9,12 @@ Esta es una aplicación web interactiva desarrollada en Python con Streamlit par
 - **SIS**: Susceptible - Infectado - Susceptible
 - **SI**: Susceptible - Infectado
 
+- **Modelo Ross-Macdonald**: Modelo acoplado Humano-Vector para enfermedades transmitidas por mosquitos (Dengue, Zika, etc.), con influencia explícita de Temperatura y Humedad.
+
 ## Características
 
 - **Interfaz Interactiva**: Ajusta los parámetros de cada modelo y observa los resultados en tiempo real.
+- **Análisis Comparativo**: Modos especiales para comparar escenarios climáticos (variando temperatura o humedad) y visualizar múltiples curvas de infección simultáneamente.
 - **Visualización Clara**: Gráficos interactivos que muestran la evolución de cada compartimento de la población a lo largo del tiempo.
 - **Educativo**: Incluye breves descripciones de cada modelo directamente en la aplicación.
 
