@@ -19,7 +19,7 @@ def main():
     st.markdown("""
     Esta aplicación permite simular diferentes modelos epidemiológicos 
     y visualizar los resultados de forma interactiva. 
-    Creada como complemento al proyecto de investigación de **María Victoria Criado**.
+    Creada como complemento al proyecto de investigación de **------------**.
     """)
 
     modelo, parametros = sidebar()
@@ -110,82 +110,23 @@ def main():
         st.plotly_chart(fig)
         with st.expander("Datos de la Simulación"):
             st.dataframe(df)
-
-    elif modelo == "Impacto Climático":
-        st.header("Análisis de Impacto Climático (Cambio de Temperatura)")
-        st.markdown(f"""
-        Este análisis simula cómo el aumento de la temperatura afecta la propagación de una epidemia. 
-        Se asume que la **Tasa de Transmisión (Beta)** aumenta un **{parametros['sensibilidad']*100}%** por cada grado Celsius adicional, 
-        simulando una mayor actividad de vectores (como mosquitos) o una incubación más rápida.
-        
-        **Modelo Base**: SEIR (Susceptible - Expuesto - Infectado - Recuperado)
-        """)
-
-        dfs = []
-        temp_base = parametros["temp_base"]
-        temp_step = parametros["temp_step"]
-        beta_base = parametros["beta"]
-        sensibilidad = parametros["sensibilidad"]
-
-        for i in range(parametros["num_escenarios"]):
-            temp_actual = temp_base + (i * temp_step)
-            # Factor de aumento: 1 + (sensibilidad * diferencia_temp)
-            # Si diferencia es 0 (temp base), factor es 1.
-            factor = 1 + (sensibilidad * (temp_actual - temp_base))
-            beta_actual = beta_base * factor
-            
-            # Ejecutar simulación SEIR
-            df_temp = modelo_seir(
-                poblacion=parametros["poblacion"],
-                infectados_iniciales=parametros["infectados_iniciales"],
-                recuperados_iniciales=parametros["recuperados_iniciales"],
-                expuestos_iniciales=parametros["expuestos_iniciales"],
-                beta=beta_actual,
-                gamma=parametros["gamma"],
-                sigma=parametros["sigma"],
-                dias=parametros["dias"]
-            )
-            
-            # Marcar el escenario en el DataFrame
-            df_temp["Escenario"] = f"{temp_actual}°C (Beta: {beta_actual:.2f})"
-            df_temp["Temp"] = temp_actual
-            
-            dfs.append(df_temp)
-
-        # Concatenar todos los resultados
-        df_final = pd.concat(dfs)
-
-        with st.expander("Parámetros Utilizados"):
-            st.write(parametros)
-
-        # Gráfico Comparativo
-        fig = px.line(df_final, x="Día", y="Infectados", color="Escenario",
-                      title=f"Comparativa de Infectados según Temperatura (Sensibilidad: {sensibilidad:.2f}/°C)",
-                      labels={"Infectados": "Número de Personas Infectadas"})
-        
-        st.plotly_chart(fig)
-        
-        with st.expander("Datos de la Simulación"):
-            st.dataframe(df_final)
-
     elif modelo == "Modelo Ross-Macdonald":
         # Documentación del Modelo
         st.header("Modelo Ross-Macdonald (Enfermedades por Vectores)")
-        with st.expander("📘 Explicación del Modelo y Factores Climáticos", expanded=True):
-            st.markdown("""
-            El modelo **Ross-Macdonald** es el estándar para simular enfermedades transmitidas por vectores (como mosquitos). 
-            A diferencia de los modelos SIR directos, este modelo acopla dos poblaciones:
-            
-            1.  **Humanos**: Susceptibles ($S_h$), Infectados ($I_h$), Recuperados ($R_h$).
-            2.  **Vectores (Mosquitos)**: Susceptibles ($S_v$), Infectados ($I_v$).
-            
-            ### Impacto del Clima
-            La Temperatura y la Humedad modifican el comportamiento biológico del vector:
-            *   **Temperatura ($T$)**: Afecta la **Tasa de Picaduras ($a$)**. Los mosquitos pican más frecuentemente a mayor temperatura (hasta cierto límite).
-                *   *Fórmula*: $a = 0.2 + 0.02 \\times (T - 20)$
-            *   **Humedad ($H$)**: Afecta la **Densidad de Mosquitos ($m$)**. Mayor humedad favorece los criaderos y la supervivencia.
-                *   *Fórmula*: $m = 1 + 0.05 \\times (H - 30)$
-            """)
+        st.markdown("""
+        El modelo **Ross-Macdonald** es el estándar para simular enfermedades transmitidas por vectores (como mosquitos). 
+        A diferencia de los modelos SIR directos, este modelo acopla dos poblaciones:
+        
+        1.  **Humanos**: Susceptibles ($S_h$), Infectados ($I_h$), Recuperados ($R_h$).
+        2.  **Vectores (Mosquitos)**: Susceptibles ($S_v$), Infectados ($I_v$).
+        
+        ### Impacto del Clima
+        La Temperatura y la Humedad modifican el comportamiento biológico del vector:
+        *   **Temperatura ($T$)**: Afecta la **Tasa de Picaduras ($a$)**. Los mosquitos pican más frecuentemente a mayor temperatura (hasta cierto límite).
+            *   *Fórmula*: $a = 0.2 + 0.02 \\times (T - 20)$
+        *   **Humedad ($H$)**: Afecta la **Densidad de Mosquitos ($m$)**. Mayor humedad favorece los criaderos y la supervivencia.
+            *   *Fórmula*: $m = 1 + 0.05 \\times (H - 30)$
+        """)
 
         modo_sim = parametros.get("modo_sim", "Simulación Simple")
         
