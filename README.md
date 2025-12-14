@@ -1,6 +1,6 @@
 # Aplicación de Simulación de Modelos Epidemiológicos
 
-Esta es una aplicación web interactiva desarrollada en Python con Streamlit para simular y visualizar modelos epidemiológicos clásicos. La herramienta fue creada como un complemento práctico al proyecto de investigación sobre modelos matemáticos para la predicción de enfermedades de Maria Victoria Criado Carretero.
+Esta es una aplicación web interactiva desarrollada en Python con Streamlit para simular y visualizar modelos epidemiológicos clásicos. La herramienta fue creada como un complemento práctico al proyecto de investigación sobre modelos matemáticos para la predicción de enfermedades de **--------**.
 
 ## Modelos Incluidos
 
